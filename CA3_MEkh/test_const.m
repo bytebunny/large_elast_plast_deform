@@ -3,7 +3,7 @@ close all
 format short e
 %%%
 
-addpath( genpath('../hyperelasticity/') ) % Add path to my routines. /Rostyslav
+addpath( genpath('../fe_program/') ) % Add path to my routines. /Rostyslav
 
 %definition of time history
 tmax=100; no_of_timesteps=1000;
