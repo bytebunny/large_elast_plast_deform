@@ -14,7 +14,7 @@ function [PK2_stress, state_var] = ...
 % PK2_stress - 2nd Piola-Kirchhoff stress (in 9-vector representation).
 % state_var - updated input structure.
 
-max_iter = params.max_iter; % Max number of Newton iterations for local constitutive problem.
+max_iter = params.max_iter_Newton; % Max number of Newton iterations for local constitutive problem.
 error_tol = params.error_tol; % Error tolerance for Newton's iteration.
 
 delta_gamma = 0; % Initialise increment of equivalent plastic strain.
@@ -39,7 +39,7 @@ else
         delta_gamma = delta_gamma - yield_func / yield_jac;
 
         if abs(yield_func) <= error_tol
-           fprintf('/// Local constitutive problem converged in %d iterations.\n',iter)
+           %fprintf('/// Local constitutive problem converged in %d iterations.\n',iter)
            break
         end
     end
