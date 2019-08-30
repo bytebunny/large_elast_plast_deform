@@ -29,7 +29,7 @@ if yield_func <= 0
     %% Elastic response
     state_var = state_var_old;
     inv_Fp = inv_Fp_old;
-    fprintf('/// Elastic step in constitutive driver.\n')
+    %fprintf('/// Elastic step in constitutive driver.\n')
 else
     %% Plastic response:     
     for iter=1:max_iter % Use Newton's method to solve local constitutive problem:
