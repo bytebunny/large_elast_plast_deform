@@ -1,5 +1,6 @@
 function [k_const, k_initial, k] = get_tangent_matrices(xy0, xy, params, ...
-                                                        state_old, t)
+                                                        state_old, t, ...
+                                                        log_strain)
 %% GET_TANGENT_MATRICES returns constitutive and initial stress matrices for CST element according to task D of assignment 2.
 %
 % Input:
@@ -8,6 +9,7 @@ function [k_const, k_initial, k] = get_tangent_matrices(xy0, xy, params, ...
 % params -- vector of material parameters: mu, lambda.
 % state_old -- structure with element state variables from previous time step.
 % t -- element thickness.
+% log_strain -- boolean to decide which material model to choose.
 %
 % Output:
 % k_const -- constitutive tangent matrix [6 x 6].
@@ -37,12 +39,22 @@ dx_dksi = xy'*shape_grad_local';
 F_temp = [F, [0; 0]];
 F = [F_temp; [0 0 1]];
 
-[S2,~]=neo_hooke_plast(m_2_v9(F'*F),state_old,params);
-% Numerical material stiffness:
-for jj=1:9
-      Cdiff=m_2_v9(F'*F); num_pert=1.e-7; Cdiff(jj)=Cdiff(jj)+num_pert;
-      [S2diff,~]=neo_hooke_plast(Cdiff,state_old,params);
-      dS2_dE(:,jj)=2*(S2diff-S2)/num_pert;
+if log_strain
+    [S2,~]=neo_hooke_plast_log_strain(m_2_v9(F'*F),state_old,params);
+    % Numerical material stiffness:
+    for jj=1:9
+        Cdiff=m_2_v9(F'*F); num_pert=1.e-7; Cdiff(jj)=Cdiff(jj)+num_pert;
+        [S2diff,~]=neo_hooke_plast_log_strain(Cdiff,state_old,params);
+        dS2_dE(:,jj)=2*(S2diff-S2)/num_pert;
+    end
+else
+    [S2,~]=neo_hooke_plast(m_2_v9(F'*F),state_old,params);
+    % Numerical material stiffness:
+    for jj=1:9
+        Cdiff=m_2_v9(F'*F); num_pert=1.e-7; Cdiff(jj)=Cdiff(jj)+num_pert;
+        [S2diff,~]=neo_hooke_plast(Cdiff,state_old,params);
+        dS2_dE(:,jj)=2*(S2diff-S2)/num_pert;
+    end
 end
 
 %sym dS2_dE, otherwise otherwise FE problem will not converge ... (sym

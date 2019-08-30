@@ -1,4 +1,5 @@
-function [f,k,state] = element_routine(x, y, u, du, params, state_old, t)
+function [f,k,state] = element_routine(x, y, u, du, params, state_old,...
+                                       t, log_strain)
 %% ELEMENT_ROUTINE Returns element bar force and stiffness in 2D.
 % Input:
 % x - initial X coordinates of nodes.
@@ -8,6 +9,7 @@ function [f,k,state] = element_routine(x, y, u, du, params, state_old, t)
 % params - structure with material and cross-sectional parameters.
 % state_old -- structure with element state variables from previous time step.
 % t - element thickness, [mm].
+% log_strain -- boolean to decide which material model to choose.
 %
 % Output:
 % f - element force vector.
@@ -20,7 +22,7 @@ y_new = y + u(2:2:end) + du(2:2:end);
 xy0 = [x', y'];
 xy = [x_new', y_new'];
 
-[f,state] = get_intern_eq_forces(xy0, xy, params, state_old, t);
+[f,state] = get_intern_eq_forces(xy0, xy, params, state_old, t, log_strain);
 
-[~,~,k] = get_tangent_matrices(xy0, xy, params, state_old, t);
+[~,~,k] = get_tangent_matrices(xy0, xy, params, state_old, t, log_strain);
 end

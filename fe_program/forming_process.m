@@ -1,4 +1,4 @@
-%% FORMING_PROCESS main script to solve task C of CA3.
+%% FORMING_PROCESS main script to solve tasks C and D of CA3.
 % The naming convention is adopted from CALFEM manual version 3.4.
 % /Rostyslav Skrypnyk
 
@@ -11,6 +11,12 @@ addpath(genpath('~/Documents/MATLAB/calfem-3/')) % Add Calfem routines.
 addpath( genpath('../CA3_MEkh/') ) % Add path to Magnus's routines.
 
 %% Pre-processing
+log_strain = true; % Choose task C (false) or D (true).
+if log_strain
+    fprintf('/// Task D (log strain) was selected.\n')
+else
+    fprintf('/// Task C was selected.\n')
+end
 save_to_file = false; % Save plot data.
 % Load mesh data: Coord, Dof, dof_fixed, dof_free, dof_prescr, Edof, Ex, Ey
 load('cass2_mesh_data.mat')
@@ -95,7 +101,8 @@ while sum(residual_vector(dof_prescr)) >= 0 % Time stepping.
                  state_array_new(i)] = element_routine(el_x(i,:), el_y(i,:), ...
                                                        u_el(i,:), du_el(i,:), ...
                                                        params, ...
-                                                       state_array(i), thickness);
+                                                       state_array(i), ...
+                                                       thickness, log_strain);
                 % Assemble global stiffness matrix and RHS vector:
                 for ii = 1:N_el_nodes * N_el_dof 
                     for jj = 1:N_el_nodes * N_el_dof
@@ -131,14 +138,16 @@ while sum(residual_vector(dof_prescr)) >= 0 % Time stepping.
                 [force_a,~,~] = element_routine(el_x(i,:), el_y(i,:), ...
                                                 u_el(i,:), du_el_a(i,:), ...
                                                 params, ...
-                                                state_array(i), thickness);
+                                                state_array(i), ...
+                                                thickness, log_strain);
                 residual_vector_a(Edof(i,2:end)) = ...
                     residual_vector_a(Edof(i,2:end)) + force_a;
                 
                 [force_b,~,~] = element_routine(el_x(i,:), el_y(i,:), ...
                                               u_el(i,:), du_el_b(i,:), ...
                                               params, ...
-                                              state_array(i), thickness);
+                                              state_array(i), ...
+                                              thickness, log_strain);
                 residual_vector_b(Edof(i,2:end)) = ...
                     residual_vector_b(Edof(i,2:end)) + force_b;
             end
@@ -155,7 +164,8 @@ while sum(residual_vector(dof_prescr)) >= 0 % Time stepping.
                     [force_c,~,~] = element_routine(el_x(i,:), el_y(i,:), ...
                                                     u_el(i,:), du_el(i,:), ...
                                                     params, ...
-                                                    state_array(i), thickness);
+                                                    state_array(i), ...
+                                                    thickness, log_strain);
                     residual_vector_c(Edof(i,2:end)) = ...
                         residual_vector_c(Edof(i,2:end)) + force_c;
                 end
@@ -200,7 +210,11 @@ ylabel('Reaction force, [N]')
 
 grid on
 if save_to_file % Create file for LaTeX.
-    f_name = ['../doc/data/force_displacement.dat'];
+    if log_strain
+        f_name = ['../doc/data/force_displacement_log_strain.dat'];
+    else
+        f_name = ['../doc/data/force_displacement.dat'];
+    end
     f_id = fopen(f_name,'w');
     header = '# Horiz displ, [mm]   Reaction force, [N]';
     
