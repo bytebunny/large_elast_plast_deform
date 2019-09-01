@@ -1,0 +1,57 @@
+\section{Task C}
+\label{sec:task-c}
+
+The second boundary value problem has been solved using Matlab script
+\texttt{forming\_process.m} (see section \ref{app:matlab-code}).
+Figure \ref{fig:forming-bvp} shows total reaction force plotted against
+displacement of the top nodes and the shape of the plate before
+and after the deformation.
+\begin{figure}[th]
+  \centering
+  % Reaction force
+  \begin{subfigure}[t]{\textwidth}
+    \begin{tikzpicture}
+      \begin{axis}[
+        width = 0.95\textwidth,
+        height=\axisdefaultheight,
+        tick label style={/pgf/number format/fixed},
+        try min ticks=6,
+        minor tick num=1,
+        grid=both,
+        xlabel = {\(u_{x}\), [mm]},
+        ylabel = {Reaction force, [N]},
+        xmin=0, xmax=5, ymax=1.6e4
+        ]
+        \addplot table[skip first n=1] {data/force_displacement_forming.dat};
+      \end{axis}
+    \end{tikzpicture}
+    \caption{}
+  \end{subfigure}
+
+  % Geometry
+  \begin{subfigure}[t]{\textwidth}
+    \begin{tikzpicture}
+      \begin{axis}[
+        width = 0.95\textwidth,
+        try min ticks=6,
+        enlargelimits=false,
+        axis equal image,
+        axis on top,
+        xlabel={\(x\), [mm]},
+        ylabel={\(y\), [mm]}
+        ]
+        \addplot graphics[xmin=0,xmax=24.66,
+                          ymin=0,ymax=20] {plate_with_hole_mesh};
+      \end{axis}
+    \end{tikzpicture}  
+    \caption{}
+  \end{subfigure}
+  \caption{(a) Reaction force versus displacement and (b) deformed mesh.}
+  \label{fig:forming-bvp}
+\end{figure}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

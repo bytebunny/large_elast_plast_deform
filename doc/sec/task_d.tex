@@ -1,0 +1,44 @@
+\section{Task D}
+\label{sec:task-d}
+
+The logarithmic strain model from chapter 5 \cite{Ekh2016} was implemented
+in Matlab function \texttt{neo\_hooke\_plast\_log\_strain.m} (see 
+section \ref{app:matlab-code}) and applied to solve the same boundary 
+value problem as in section \ref{sec:task-c}.
+Figure \ref{fig:forming-bvp-log-strain} compares the total reaction force
+plotted against displacement of the top nodes for the two models.
+The two models yield virtually the same graphs.
+\begin{figure}[th]
+  \centering
+  % Reaction force
+    \begin{tikzpicture}
+      \begin{axis}[
+        width = 0.95\textwidth,
+        height=\axisdefaultheight,
+        tick label style={/pgf/number format/fixed},
+        try min ticks=6,
+        minor tick num=1,
+        grid=both,
+        legend style={at={(0.5,0)},
+          anchor=south},
+        xlabel = {\(u_{x}\), [mm]},
+        ylabel = {Reaction force, [N]},
+        xmin=0, xmax=5,
+        ]
+        \addplot[mark=none, blue] table[skip first n=1]
+        {data/force_displacement_forming.dat};
+        \addlegendentry{Neo-Hooke}
+        \addplot[mark=none, red, dashed] table[skip first n=1]
+        {data/force_displacement_log_strain.dat};
+        \addlegendentry{Neo-Hooke, log strain}
+      \end{axis}
+    \end{tikzpicture}
+    \caption{Reaction force versus displacement.}
+  \label{fig:forming-bvp-log-strain}
+\end{figure}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:
